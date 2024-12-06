@@ -11,7 +11,7 @@ import (
 
 func main() {
 	// Open the file
-	file, err := os.Open("mod.txt")
+	file, err := os.Open("input-text-2.txt")
 	if err != nil {
 		fmt.Println("Error opening file:", err)
 		return
@@ -51,27 +51,32 @@ func main() {
 func checkIfSafe(data [][]int) {
 	count := 0
 	for _,part := range data{
-		isIncreasing := true
-		isDecreasing := true
-
-		// Check both conditions
-		for i := 0; i < len(part)-1; i++ {
-			// Condition 1: Check if adjacent elements differ by at least 1 and at most 3
-			diff := math.Abs(float64(part[i+1] - part[i]))
-			if diff < 1 || diff > 3 {
-				break // If any adjacent difference is out of bounds, return false
-			}
-	
-			// Condition 2: Check if the sequence is increasing or decreasing
-			if part[i+1] > part[i] {
-				isDecreasing = false
-			} else if part[i+1] < part[i] {
-				isIncreasing = false
-			}
-		}
-		if isDecreasing || isIncreasing {
-			count++
+		if isSafe(part) {
+			count++;
 		}
 	}
-	fmt.Print("count", count)
+	fmt.Println("count", count)
+}
+
+func isSafe(report []int) bool {
+	// Flag to check if all differences are between 1 and 3 and the sequence is monotonic
+	isIncreasing := true
+	isDecreasing := true
+	// Iterate over the report's levels and check the conditions
+	for i := 1; i < len(report); i++ {
+		diff := report[i] - report[i-1]
+		// Check if the difference is outside the allowed range [1, 3]
+		if math.Abs(float64(diff)) == 0 || math.Abs(float64(diff)) > 3   {
+			return false
+		}
+
+		// Track if the sequence is increasing or decreasing
+		if diff > 0 {
+			isDecreasing = false
+		}
+		if diff < 0 {
+			isIncreasing = false
+		}
+	}
+	return isIncreasing || isDecreasing
 }
