@@ -51,8 +51,10 @@ func main() {
 func checkIfSafe(data [][]int) {
 	count := 0
 	for _,part := range data{
-		if isSafe(part) {
-			count++;
+		if isSafe(part)  {
+			count++
+		}else if canRemoveOneLevel(part) {
+			count++
 		}
 	}
 	fmt.Println("count", count)
@@ -79,4 +81,18 @@ func isSafe(report []int) bool {
 		}
 	}
 	return isIncreasing || isDecreasing
+}
+
+func canRemoveOneLevel(report []int) bool {
+	// Try removing each element one by one and check if it results in a safe report
+	for i := 0; i < len(report); i++ {
+		// Create a new slice with the i-th element removed
+		interReport := make([]int, len(report))
+		copy(interReport, report)
+		newReport := append(interReport[:i], interReport[i+1:]...)
+		if isSafe(newReport) {
+			return true
+		}
+	}
+	return false
 }
